@@ -398,45 +398,65 @@ class TestRequest(unittest.TestCase):
         self.assertEqual(msg.request_length, 4294967295)
 
 
+class TestPiece(unittest.TestCase):
+    def test_get_message(self):
+        msg = message.Message.get_message('piece',
+                                          index=0,
+                                          begin=0,
+                                          block=b'')
+        self.assertTrue(isinstance(msg, message.Piece))
+
+    def test_get_message__to_bytes(self):
+        byte_str = b'\x00\x00\x00\x0e\x07\x00\x00\x00\x00\x00\x00\x00\x00'
+        block = b'\x00\x00\x00\x00\x00'
+        byte_str += block
+        msg = message.Message.get_message('piece',
+                                          index=0,
+                                          begin=0,
+                                          block=block)
+        self.assertEqual(msg.to_bytes(), byte_str)
+
+    @unittest.skip("Takes long to test")
+    def test_get_message__to_bytes__max_length(self):
+        byte_str = b'\xFF\xFF\xFF\xFF\x07\x00\x00\x00\x00\x00\x00\x00\x00'
+        block = (b'\x00' * 4294967286)  # max int - 9
+        byte_str += block
+        msg = message.Message.get_message('piece',
+                                          index=0,
+                                          begin=0,
+                                          block=block)
+        self.assertEqual(msg.to_bytes(), byte_str)
+
+    def test_get_message__length(self):
+        block = b'0000111100001111'
+        msg = message.Message.get_message('piece', 0, 0, None, block)
+        self.assertEqual(msg.length, 9 + len(block))
+
+    def test_get_message__id(self):
+        block = b'0000111100001111'
+        msg = message.Message.get_message('piece', 0, 0, None, block)
+        self.assertEqual(msg.id, 7)
+
+    def test_get_message__index(self):
+        block = b'0000111100001111'
+        msg = message.Message.get_message('piece', 0, 0, None, block)
+        self.assertEqual(msg.index, 0)
+
+    def test_get_message__begin(self):
+        block = b'0000111100001111'
+        msg = message.Message.get_message('piece', 0, 0, None, block)
+        self.assertEqual(msg.begin, 0)
+
+    def test_get_message__block(self):
+        block = b'0000111100001111'
+        msg = message.Message.get_message('piece', 0, 0, None, block)
+        self.assertEqual(msg.block, block)
+
+
 
 '''
 class TestGetMessage(unittest.TestCase):
 
-    def test_piece(self):
-        block = b'0000111100001111'
-        msg = Message.get_message('piece', 0, 0, None, block)
-        self.assertEqual(isinstance(msg, Piece), True)
-
-    def test_piece__to_bytes(self):
-        block = b'0000111100001111'
-        block_b = b'\x00\x00\x00\x19\x07\x00\x00\x00\x00\x00\x00\x00\x000000111100001111'
-        msg_b = Message.get_message('piece', 0, 0, None, block).to_bytes()
-        self.assertEqual(msg_b, block_b)
-
-    def test_piece__length(self):
-        block = b'0000111100001111'
-        msg = Message.get_message('piece', 0, 0, None, block)
-        self.assertEqual(msg.length, 9 + len(block))
-
-    def test_piece__id(self):
-        block = b'0000111100001111'
-        msg = Message.get_message('piece', 0, 0, None, block)
-        self.assertEqual(msg.id, 7)
-
-    def test_piece__index(self):
-        block = b'0000111100001111'
-        msg = Message.get_message('piece', 0, 0, None, block)
-        self.assertEqual(msg.index, 0)
-
-    def test_piece__begin(self):
-        block = b'0000111100001111'
-        msg = Message.get_message('piece', 0, 0, None, block)
-        self.assertEqual(msg.begin, 0)
-
-    def test_piece__block(self):
-        block = b'0000111100001111'
-        msg = Message.get_message('piece', 0, 0, None, block)
-        self.assertEqual(msg.block, block)
 
     def test_cancel(self):
         msg = Message.get_message('cancel', 0, 1, 2 ** 8)
