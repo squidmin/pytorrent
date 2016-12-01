@@ -80,7 +80,7 @@ class Message(object):
     # Factory method for generating message objects from raw bytes
     @staticmethod
     def get_message_from_bytes(payload):
-        length = unpack('!l', payload[:4])[0]
+        length = unpack('>L', payload[:4])[0]
 
         # go ahead and handle the KeepAlive first
         if length == 0:
@@ -101,25 +101,25 @@ class Message(object):
         elif msg_id == 3:
             return NotInterested()
         elif msg_id == 4:
-            index = unpack('!l', payload[5:])[0]
+            index = unpack('>L', payload[5:])[0]
             return Have(index)
         elif msg_id == 5:
             bitfield = payload[5:]
             return BitField(bitfield)
         elif msg_id == 6:
-            index = int(unpack('!l', payload[5:9])[0])
-            begin = int(unpack('!l', payload[9:13])[0])
-            r_length = int(unpack('!l', payload[13:])[0])
+            index = int(unpack('>L', payload[5:9])[0])
+            begin = int(unpack('>L', payload[9:13])[0])
+            r_length = int(unpack('>L', payload[13:])[0])
             return Request(index, begin, r_length)
         elif msg_id == 7:
-            index = int(unpack('!l', payload[5:9])[0])
-            begin = int(unpack('!l', payload[9:13])[0])
+            index = int(unpack('>L', payload[5:9])[0])
+            begin = int(unpack('>L', payload[9:13])[0])
             block = payload[13:]
             return Piece(index, begin, block)
         elif msg_id == 8:
-            index = int(unpack('!l', payload[5:9])[0])
-            begin = int(unpack('!l', payload[9:13])[0])
-            r_length = int(unpack('!l', payload[13:])[0])
+            index = int(unpack('>L', payload[5:9])[0])
+            begin = int(unpack('>L', payload[9:13])[0])
+            r_length = int(unpack('>L', payload[13:])[0])
             return Cancel(index, begin, r_length)
         elif msg_id == 9:
             port = int(unpack('!H', payload[5:])[0])
@@ -129,7 +129,7 @@ class Message(object):
 
     def to_bytes(self):
         if self.length is not None:
-            r = pack('!l', self.length)
+            r = pack('>L', self.length)
         if self.id is not None:
             r += pack('!c', bytes([self.id]))
         return r
@@ -211,7 +211,7 @@ class Have(Message):
         self.index = index
 
     def to_bytes(self):
-        return super(Have, self).to_bytes() + pack('!l', self.index)
+        return super(Have, self).to_bytes() + pack('>L', self.index)
 
 
 class BitField(Message):
@@ -271,9 +271,9 @@ class Request(Message):
 
     def to_bytes(self):
         r = super(Request, self).to_bytes()
-        r += pack('!l', self.index)
-        r += pack('!l', self.begin)
-        r += pack('!l', self.request_length)
+        r += pack('>L', self.index)
+        r += pack('>L', self.begin)
+        r += pack('>L', self.request_length)
         return r
 
 
@@ -299,8 +299,8 @@ class Piece(Message):
 
     def to_bytes(self):
         r = super(Piece, self).to_bytes()
-        r += pack('!l', self.index)
-        r += pack('!l', self.begin)
+        r += pack('>L', self.index)
+        r += pack('>L', self.begin)
         r += self.block
         return r
 
@@ -323,9 +323,9 @@ class Cancel(Message):
 
     def to_bytes(self):
         r = super(Cancel, self).to_bytes()
-        r += pack('!l', self.index)
-        r += pack('!l', self.begin)
-        r += pack('!l', self.request_length)
+        r += pack('>L', self.index)
+        r += pack('>L', self.begin)
+        r += pack('>L', self.request_length)
         return r
 
 
