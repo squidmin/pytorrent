@@ -1,3 +1,5 @@
 pytest
 requests
 bitstring
+codeclimate-test-reporter
+pytest-cov

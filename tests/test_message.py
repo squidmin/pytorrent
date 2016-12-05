@@ -476,6 +476,121 @@ class TestPiece(unittest.TestCase):
         self.assertEqual(msg.block, block)
 
 
+class TestCancel(unittest.TestCase):
+    def test_get_message(self):
+        msg = message.Message.get_message('cancel',
+                                          index=0,
+                                          begin=0,
+                                          length=0)
+        self.assertTrue(isinstance(msg, message.Cancel))
+
+    def test_get_message__to_bytes(self):
+        msg = message.Message.get_message('cancel',
+                                          index=0,
+                                          begin=0,
+                                          length=0)
+        byte_str = b'\x00\x00\x00\x13\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+        byte_str += b'\x00\x00\x00'
+        self.assertTrue(msg.to_bytes, byte_str)
+
+    def test_get_message__to_bytes__all_maxed(self):
+        msg = message.Message.get_message('cancel',
+                                          index=4294967295,
+                                          begin=4294967295,
+                                          length=4294967295)
+        byte_str = b'\x00\x00\x00\x13\x08\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF'
+        byte_str += b'\xFF\xFF\xFF'
+        self.assertTrue(msg.to_bytes, byte_str)
+
+    def test_get_message__length(self):
+        msg = message.Message.get_message('cancel',
+                                          index=0,
+                                          begin=0,
+                                          length=0)
+        self.assertEqual(msg.length, 13)
+
+    def test_get_message__id(self):
+        msg = message.Message.get_message('cancel',
+                                          index=0,
+                                          begin=0,
+                                          length=0)
+        self.assertEqual(msg.id, 8)
+
+    def test_get_message__index(self):
+        msg = message.Message.get_message('cancel',
+                                          index=0,
+                                          begin=0,
+                                          length=0)
+        self.assertEqual(msg.index, 0)
+
+    def test_get_message__begin(self):
+        msg = message.Message.get_message('cancel',
+                                          index=0,
+                                          begin=0,
+                                          length=0)
+        self.assertEqual(msg.begin, 0)
+
+    def test_get_message__request_length(self):
+        msg = message.Message.get_message('cancel',
+                                          index=0,
+                                          begin=0,
+                                          length=0)
+        self.assertEqual(msg.request_length, 0)
+
+    def test_get_message_from_bytes(self):
+        byte_str = b'\x00\x00\x00\x13\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+        byte_str += b'\x00\x00\x00'
+        msg = message.Message.get_message_from_bytes(byte_str)
+        self.assertTrue(isinstance(msg, message.Cancel))
+
+    def test_get_message_from_bytes__length(self):
+        byte_str = b'\x00\x00\x00\x13\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+        byte_str += b'\x00\x00\x00'
+        msg = message.Message.get_message_from_bytes(byte_str)
+        self.assertEqual(msg.length, 13)
+
+    def test_get_message_from_bytes__id(self):
+        byte_str = b'\x00\x00\x00\x13\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+        byte_str += b'\x00\x00\x00'
+        msg = message.Message.get_message_from_bytes(byte_str)
+        self.assertEqual(msg.id, 8)
+
+    def test_get_message_from_bytes__index(self):
+        byte_str = b'\x00\x00\x00\x13\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+        byte_str += b'\x00\x00\x00'
+        msg = message.Message.get_message_from_bytes(byte_str)
+        self.assertEqual(msg.index, 0)
+
+    def test_get_message_from_bytes__max_index(self):
+        byte_str = b'\x00\x00\x00\x13\x08\xFF\xFF\xFF\xFF\x00\x00\x00\x00\x00'
+        byte_str += b'\x00\x00\x00'
+        msg = message.Message.get_message_from_bytes(byte_str)
+        self.assertEqual(msg.index, 4294967295)
+
+    def test_get_message_from_bytes__begin(self):
+        byte_str = b'\x00\x00\x00\x13\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+        byte_str += b'\x00\x00\x00'
+        msg = message.Message.get_message_from_bytes(byte_str)
+        self.assertEqual(msg.begin, 0)
+
+    def test_get_message_from_bytes__max_begin(self):
+        byte_str = b'\x00\x00\x00\x13\x08\x00\x00\x00\x00\xFF\xFF\xFF\xFF\x00'
+        byte_str += b'\x00\x00\x00'
+        msg = message.Message.get_message_from_bytes(byte_str)
+        self.assertEqual(msg.begin, 4294967295)
+
+    def test_get_message_from_bytes__request_length(self):
+        byte_str = b'\x00\x00\x00\x13\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+        byte_str += b'\x00\x00\x00'
+        msg = message.Message.get_message_from_bytes(byte_str)
+        self.assertEqual(msg.request_length, 0)
+
+    def test_get_message_from_bytes__max_request_length(self):
+        byte_str = b'\x00\x00\x00\x13\x08\x00\x00\x00\x00\x00\x00\x00\x00\xFF'
+        byte_str += b'\xFF\xFF\xFF'
+        msg = message.Message.get_message_from_bytes(byte_str)
+        self.assertEqual(msg.request_length, 4294967295)
+
 
 '''
 class TestGetMessage(unittest.TestCase):
