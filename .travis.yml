@@ -7,4 +7,6 @@ python:
 # command to install dependencies
 install: "pip install -r requirements.txt"
 # command to run tests
-script: python -m pytest
+script: py.test --cov=pytorrent tests/
+# command to generate code coverage
+script: codeclimate-test-reporter
