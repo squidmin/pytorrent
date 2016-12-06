@@ -595,36 +595,6 @@ class TestCancel(unittest.TestCase):
 '''
 class TestGetMessage(unittest.TestCase):
 
-
-    def test_cancel(self):
-        msg = Message.get_message('cancel', 0, 1, 2 ** 8)
-        self.assertEqual(isinstance(msg, Cancel), True)
-
-    def test_cancel__to_bytes(self):
-        cancel_b = b'\x00\x00\x00\r\x08\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x01\x00'
-        msg_b = Message.get_message('cancel', 0, 1, 2 ** 8).to_bytes()
-        self.assertEqual(msg_b, cancel_b)
-
-    def test_cancel__length(self):
-        msg = Message.get_message('cancel', 0, 1, 2 ** 8)
-        self.assertEqual(msg.length, 13)
-
-    def test_cancel__id(self):
-        msg = Message.get_message('cancel', 0, 1, 2 ** 8)
-        self.assertEqual(msg.id, 8)
-
-    def test_cancel__index(self):
-        msg = Message.get_message('cancel', 0, 1, 2 ** 8)
-        self.assertEqual(msg.index, 0)
-
-    def test_cancel__begin(self):
-        msg = Message.get_message('cancel', 0, 1, 2 ** 8)
-        self.assertEqual(msg.begin, 1)
-
-    def test_cancel__request_length(self):
-        msg = Message.get_message('cancel', 0, 1, 2 ** 8)
-        self.assertEqual(msg.request_length, 2 ** 8)
-
     def test_port(self):
         msg = Message.get_message('port', None, None, None, None, 80)
         self.assertEqual(isinstance(msg, Port), True)
