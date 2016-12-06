@@ -8,5 +8,5 @@ python:
 install: "pip install -r requirements.txt"
 # command to run tests & generate code coverage
 script:
-  - py.test --cov=.
+  - py.test --random --cov=. tests/
   - codeclimate-test-reporter
