@@ -3,3 +3,4 @@ requests
 bitstring
 codeclimate-test-reporter
 pytest-cov
+pytest-xdist
