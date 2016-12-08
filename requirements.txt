@@ -1,8 +1,7 @@
-pytest
 requests
 bitstring
 codeclimate-test-reporter
+pytest
 pytest-cov
 pytest-xdist
-pytest-faulthandler
 pytest-random
