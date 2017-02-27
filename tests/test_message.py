@@ -2,86 +2,86 @@ import unittest
 from context import message
 
 
-# class TestKeepAlive(unittest.TestCase):
-#     def test_get_message(self):
-#         msg = message.Message.get_message('keep-alive')
-#         self.assertTrue(isinstance(msg, message.KeepAlive))
-# 
-#     def test_get_message__length(self):
-#         msg = message.Message.get_message('keep-alive')
-#         self.assertEqual(msg.length, 0)
-# 
-#     def test_get_message__to_bytes(self):
-#         msg = message.Message.get_message('keep-alive')
-#         self.assertEqual(msg.to_bytes(), b'\x00\x00\x00\x00')
-# 
-#     def test_get_message_from_bytes(self):
-#         msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x00')
-#         self.assertTrue(isinstance(msg, message.KeepAlive))
-# 
-#     def test_get_message_from_bytes__length(self):
-#         msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x00')
-#         self.assertEqual(msg.length, 0)
-# 
-# 
-# class TestChoke(unittest.TestCase):
-#     def test_get_message(self):
-#         msg = message.Message.get_message('choke')
-#         self.assertTrue(isinstance(msg, message.Choke))
-# 
-#     def test_get_message__to_bytes(self):
-#         msg = message.Message.get_message('choke')
-#         self.assertEqual(msg.to_bytes(), b'\x00\x00\x00\x01\x00')
-# 
-#     def test_get_message__length(self):
-#         msg = message.Message.get_message('choke')
-#         self.assertEqual(msg.length, 1)
-# 
-#     def test_get_message__id(self):
-#         msg = message.Message.get_message('choke')
-#         self.assertEqual(msg.id, 0)
-# 
-#     def test_get_message_from_bytes(self):
-#         msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x01\x00')
-#         self.assertTrue(isinstance(msg, message.Choke))
-# 
-#     def test_get_message_from_bytes__length(self):
-#         msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x01\x00')
-#         self.assertEqual(msg.length, 1)
-# 
-#     def test_get_message_from_bytes__id(self):
-#         msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x01\x00')
-#         self.assertEqual(msg.id, 0)
-# 
-# 
-# class TestUnChoke(unittest.TestCase):
-#     def test_get_message(self):
-#         msg = message.Message.get_message('unchoke')
-#         self.assertEqual(isinstance(msg, message.UnChoke), True)
-# 
-#     def test_get_message__to_bytes(self):
-#         msg_b = message.Message.get_message('unchoke').to_bytes()
-#         self.assertEqual(msg_b, b'\x00\x00\x00\x01\x01')
-# 
-#     def test_get_message__length(self):
-#         msg = message.Message.get_message('unchoke')
-#         self.assertEqual(msg.length, 1)
-# 
-#     def test_get_message__id(self):
-#         msg = message.Message.get_message('unchoke')
-#         self.assertEqual(msg.id, 1)
-# 
-#     def test_get_message_from_bytes(self):
-#         msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x01\x01')
-#         self.assertTrue(isinstance(msg, message.UnChoke))
-# 
-#     def test_get_message_from_bytes__length(self):
-#         msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x01\x01')
-#         self.assertEqual(msg.length, 1)
-# 
-#     def test_get_message_from_bytes__id(self):
-#         msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x01\x01')
-#         self.assertEqual(msg.id, 1)
+class TestKeepAlive(unittest.TestCase):
+    def test_get_message(self):
+        msg = message.Message.get_message('keep-alive')
+        self.assertTrue(isinstance(msg, message.KeepAlive))
+
+    def test_get_message__length(self):
+        msg = message.Message.get_message('keep-alive')
+        self.assertEqual(msg.length, 0)
+
+    def test_get_message__to_bytes(self):
+        msg = message.Message.get_message('keep-alive')
+        self.assertEqual(msg.to_bytes(), b'\x00\x00\x00\x00')
+
+    def test_get_message_from_bytes(self):
+        msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x00')
+        self.assertTrue(isinstance(msg, message.KeepAlive))
+
+    def test_get_message_from_bytes__length(self):
+        msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x00')
+        self.assertEqual(msg.length, 0)
+
+
+class TestChoke(unittest.TestCase):
+    def test_get_message(self):
+        msg = message.Message.get_message('choke')
+        self.assertTrue(isinstance(msg, message.Choke))
+
+    def test_get_message__to_bytes(self):
+        msg = message.Message.get_message('choke')
+        self.assertEqual(msg.to_bytes(), b'\x00\x00\x00\x01\x00')
+
+    def test_get_message__length(self):
+        msg = message.Message.get_message('choke')
+        self.assertEqual(msg.length, 1)
+
+    def test_get_message__id(self):
+        msg = message.Message.get_message('choke')
+        self.assertEqual(msg.id, 0)
+
+    def test_get_message_from_bytes(self):
+        msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x01\x00')
+        self.assertTrue(isinstance(msg, message.Choke))
+
+    def test_get_message_from_bytes__length(self):
+        msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x01\x00')
+        self.assertEqual(msg.length, 1)
+
+    def test_get_message_from_bytes__id(self):
+        msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x01\x00')
+        self.assertEqual(msg.id, 0)
+
+
+class TestUnChoke(unittest.TestCase):
+    def test_get_message(self):
+        msg = message.Message.get_message('unchoke')
+        self.assertEqual(isinstance(msg, message.UnChoke), True)
+
+    def test_get_message__to_bytes(self):
+        msg_b = message.Message.get_message('unchoke').to_bytes()
+        self.assertEqual(msg_b, b'\x00\x00\x00\x01\x01')
+
+    def test_get_message__length(self):
+        msg = message.Message.get_message('unchoke')
+        self.assertEqual(msg.length, 1)
+
+    def test_get_message__id(self):
+        msg = message.Message.get_message('unchoke')
+        self.assertEqual(msg.id, 1)
+
+    def test_get_message_from_bytes(self):
+        msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x01\x01')
+        self.assertTrue(isinstance(msg, message.UnChoke))
+
+    def test_get_message_from_bytes__length(self):
+        msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x01\x01')
+        self.assertEqual(msg.length, 1)
+
+    def test_get_message_from_bytes__id(self):
+        msg = message.Message.get_message_from_bytes(b'\x00\x00\x00\x01\x01')
+        self.assertEqual(msg.id, 1)
 # 
 # 
 # class TestInterested(unittest.TestCase):
