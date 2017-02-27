@@ -49,12 +49,10 @@ class Tracker(object):
             return self.peers
         peers = request[b'peers']
         if type(peers) == bytes:
-            self.peers = list(set(self.peers) |
-                              set(self.decode_binary_peers(peers)))
+            return set(self.decode_binary_peers(peers)))
         elif type(peers) == list:
-            self.peers = list(set(self.peers) |
-                              set(self.decode_expanded_peers(peers)))
-        return self.peers
+            return self.decode_expanded_peers(peers))
+        return None
 
     def decode_port(self, port):
         """ Given a big-endian encoded port, returns the numerical
