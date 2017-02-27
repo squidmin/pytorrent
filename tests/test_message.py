@@ -1,4 +1,5 @@
 import unittest
+import gc
 from context import message
 
 
@@ -399,6 +400,9 @@ class TestRequest(unittest.TestCase):
 
 
 class TestPiece(unittest.TestCase):
+    def tearDown(self):
+        gc.collect()
+
     def test_get_message(self):
         msg = message.Message.get_message('piece',
                                           index=0,
