@@ -1,5 +1,4 @@
 import unittest
-import gc
 from context import message
 
 
@@ -428,53 +427,53 @@ class TestPiece(unittest.TestCase):
 #                                           block=block)
 #         self.assertEqual(msg.to_bytes(), byte_str)
 # 
-#     def test_get_message__length_10(self):
-#         block = (b'\x00')
-#         msg = message.Message.get_message('piece',
-#                                           index=0,
-#                                           begin=0,
-#                                           block=block)
-#         self.assertEqual(msg.length, 10)
-# 
-#     def test_get_message__length_265(self):
-#         block = (b'\x00' * 256)
-#         msg = message.Message.get_message('piece',
-#                                           index=0,
-#                                           begin=0,
-#                                           block=block)
-#         self.assertEqual(msg.length, 265)
-# 
-#     def test_get_message__id(self):
-#         block = (b'\x00' * 256)
-#         msg = message.Message.get_message('piece',
-#                                           index=0,
-#                                           begin=0,
-#                                           block=block)
-#         self.assertEqual(msg.id, 7)
-# 
-#     def test_get_message__index(self):
-#         block = (b'\x00' * 256)
-#         msg = message.Message.get_message('piece',
-#                                           index=0,
-#                                           begin=0,
-#                                           block=block)
-#         self.assertEqual(msg.index, 0)
-# 
-#     def test_get_message__begin(self):
-#         block = (b'\x00' * 256)
-#         msg = message.Message.get_message('piece',
-#                                           index=0,
-#                                           begin=0,
-#                                           block=block)
-#         self.assertEqual(msg.begin, 0)
-# 
-#     def test_get_message__block(self):
-#         block = (b'\xFF' * 256)
-#         msg = message.Message.get_message('piece',
-#                                           index=0,
-#                                           begin=0,
-#                                           block=block)
-#         self.assertEqual(msg.block, block)
+    def test_get_message__length_10(self):
+        block = (b'\x00')
+        msg = message.Message.get_message('piece',
+                                          index=0,
+                                          begin=0,
+                                          block=block)
+        self.assertEqual(msg.length, 10)
+
+    def test_get_message__length_265(self):
+        block = (b'\x00' * 256)
+        msg = message.Message.get_message('piece',
+                                          index=0,
+                                          begin=0,
+                                          block=block)
+        self.assertEqual(msg.length, 265)
+
+    def test_get_message__id(self):
+        block = (b'\x00' * 256)
+        msg = message.Message.get_message('piece',
+                                          index=0,
+                                          begin=0,
+                                          block=block)
+        self.assertEqual(msg.id, 7)
+
+    def test_get_message__index(self):
+        block = (b'\x00' * 256)
+        msg = message.Message.get_message('piece',
+                                          index=0,
+                                          begin=0,
+                                          block=block)
+        self.assertEqual(msg.index, 0)
+
+    def test_get_message__begin(self):
+        block = (b'\x00' * 256)
+        msg = message.Message.get_message('piece',
+                                          index=0,
+                                          begin=0,
+                                          block=block)
+        self.assertEqual(msg.begin, 0)
+
+    def test_get_message__block(self):
+        block = (b'\xFF' * 256)
+        msg = message.Message.get_message('piece',
+                                          index=0,
+                                          begin=0,
+                                          block=block)
+        self.assertEqual(msg.block, block)
 
 
 # class TestCancel(unittest.TestCase):
