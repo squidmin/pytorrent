@@ -417,17 +417,17 @@ class TestPiece(unittest.TestCase):
                                           block=block)
         self.assertEqual(msg.to_bytes(), byte_str)
 
-    @unittest.skip("Takes long to test")
-    def test_get_message__to_bytes__max_length(self):
-        byte_str = b'\xFF\xFF\xFF\xFF\x07\x00\x00\x00\x00\x00\x00\x00\x00'
-        block = (b'\x00' * 4294967286)  # max int - 9
-        byte_str += block
-        msg = message.Message.get_message('piece',
-                                          index=0,
-                                          begin=0,
-                                          block=block)
-        self.assertEqual(msg.to_bytes(), byte_str)
-
+#     @unittest.skip("Takes long to test")
+#     def test_get_message__to_bytes__max_length(self):
+#         byte_str = b'\xFF\xFF\xFF\xFF\x07\x00\x00\x00\x00\x00\x00\x00\x00'
+#         block = (b'\x00' * 4294967286)  # max int - 9
+#         byte_str += block
+#         msg = message.Message.get_message('piece',
+#                                           index=0,
+#                                           begin=0,
+#                                           block=block)
+#         self.assertEqual(msg.to_bytes(), byte_str)
+# 
 #     def test_get_message__length_10(self):
 #         block = (b'\x00')
 #         msg = message.Message.get_message('piece',
