@@ -49,9 +49,9 @@ class Tracker(object):
             return self.peers
         peers = request[b'peers']
         if type(peers) == bytes:
-            return set(self.decode_binary_peers(peers)))
+            return self.decode_binary_peers(peers)
         elif type(peers) == list:
-            return self.decode_expanded_peers(peers))
+            return self.decode_expanded_peers(peers)
         return None
 
     def decode_port(self, port):
