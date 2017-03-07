@@ -88,17 +88,12 @@ class Torrent(object):
     @property
     def trackers(self):
         """Returns the list of trackers in the order they should be queried"""
-        ret = []
-        if b'announce-list' in self._dict:
-            for trackers in self._dict[b'announce-list']:
-                for tracker in trackers:
-                    try:
-                        ret.append(tracker.decode('utf-8'))
-                    except:
-                        pass
-        elif b'announce' in self._dict:
-            ret.append(self._dict[b'announce'].decode('utf-8'))
-        return ret
+        if b'announce' in self._dict:
+            return list(self._dict[b'announce'].decode('utf-8'))
+        elif b'announce-list' in self._dict:
+            return [t.decode('utf-8')
+                    for trackers in self._dict[b'announce-list']
+                    for t in trackers]
 
     @property
     def bitfield(self):
