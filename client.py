@@ -1,10 +1,8 @@
 from bencode import decode
 from session import Session
 from tracker import Tracker
-from torrent import Status
 from util import generate_peer_id
 import threading
-import time
 
 
 class Client(object):
