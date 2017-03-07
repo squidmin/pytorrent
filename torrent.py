@@ -158,6 +158,11 @@ class Torrent(object):
 
     @property
     def files(self):
+        """Returns the files associated with the torrent in the form
+        of a dict. {path: length...}
+        ex) {'file1.txt': 128,
+             'dir/file2.txt': 256}
+        """
         files = []
         if b'length' in self._dict[b'info']:
             path = self._dict[b'info'][b'name'].decode('utf-8')
@@ -215,6 +220,7 @@ class Torrent(object):
         # return count / self.total_pieces
 
     def complete(self):
+        """Returns True/False based on if the torrent is finished downloading"""
         return self.bitfield == BitArray(len(self.bitfield) * '0b1')
 
     def __eq__(self, other):
