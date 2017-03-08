@@ -1,4 +1,5 @@
 import asyncio
+import tempfile
 from bencode import decode, encode
 from hashlib import sha1
 from math import ceil
@@ -43,6 +44,12 @@ class Torrent(object):
         self._dict = torrent_dict
         self._save_path = save_path
         self.loop = asyncio.get_event_loop()
+        for t in self.trackers:
+            print(f'adding task for {t}')
+            loop.create_task(tracker.get_peers(self.loop,
+                                               t,
+                                               self.info_hash))
+
 
     @classmethod
     def fromurl(cls, url):
@@ -111,6 +118,19 @@ class Torrent(object):
 
     @property
     def bitfield(self):
+        """Bitfield object for the pieces we are successfully downloaded
+        note that this object should not be set directly. But should be
+        set by a call back or some other function
+        """
+        path = os.path.join(tempfile.gettempdir(), str(self.__hash__()))
+        print(path)
+        if not os.path.exists(path):
+            with open(path, 'w') as f:
+                num_pieces = ceil((len(self.pieces) / 20))
+                f.write('0b' + '0' * num_pieces)
+        with open(path, 'r') as f:
+            data = f.read()
+            self._bitfield = BitArray(data)
         return self._bitfield
 
     def __eq__(self, other):
@@ -118,7 +138,8 @@ class Torrent(object):
         return self.info_hash == other.info_hash
 
     def __hash__(self):
-        return hash(self.info_hash)
+        print(int(sha1(self.info_hash).hexdigest(), 16))
+        return int(sha1(self.info_hash).hexdigest(), 16)
 
     def __str__(self):
         return self.name
@@ -140,10 +161,14 @@ async def main(loop):
         url = ('https://yts.ag/torrent/download/'
                'FFCDCB5312F25DB37034552849843981BD401C9D')
         data = await fetch(session, url)
-        print(Torrent(decode(data)))
+        torrent = Torrent(decode(data))
+        print(torrent)
+        print(torrent.info_hash)
 
 if __name__ == '__main__':
     import aiohttp
     import async_timeout
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(loop))
+    loop.create_task(main(loop))
+    loop.run_forever()
+
