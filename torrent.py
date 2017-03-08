@@ -6,6 +6,7 @@ from math import ceil
 from bitstring import BitArray
 import os
 import tracker
+import functools
 
 
 """
@@ -41,15 +42,17 @@ class Torrent(object):
                  torrent_dict=None,
                  save_path=None):
 
+        self._peers = []
         self._dict = torrent_dict
         self._save_path = save_path
         self.loop = asyncio.get_event_loop()
         for t in self.trackers:
-            print(f'adding task for {t}')
-            loop.create_task(tracker.get_peers(self.loop,
-                                               t,
-                                               self.info_hash))
-
+            future = asyncio.Future()
+            future.add_done_callback(functools.partial(self._add_peers, peers=future.result))
+            self.loop.create_task(tracker.get_peers(self.loop,
+                                                    future,
+                                                    t,
+                                                    self.info_hash))
 
     @classmethod
     def fromurl(cls, url):
@@ -133,6 +136,8 @@ class Torrent(object):
             self._bitfield = BitArray(data)
         return self._bitfield
 
+    def _add_peers(self, future, peers):
+        self._peers += peers()
     def __eq__(self, other):
         ''' Torrents are considered equal if their info_hashes are the same'''
         return self.info_hash == other.info_hash
@@ -168,7 +173,9 @@ async def main(loop):
 if __name__ == '__main__':
     import aiohttp
     import async_timeout
+    url = ('https://yts.ag/torrent/download/'
+           'FFCDCB5312F25DB37034552849843981BD401C9D')
+    torrent = Torrent.fromurl(url)
     loop = asyncio.get_event_loop()
     loop.create_task(main(loop))
     loop.run_forever()
-
