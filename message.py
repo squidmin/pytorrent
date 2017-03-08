@@ -213,9 +213,7 @@ class Request(Message):
     length: integer specifying the requested length.
     '''
     def __init__(self, index, begin, length):
-        Message.__init__(self)
-        self.length = 13
-        self.id = 6
+        Message.__init__(self, 13, 6)
         self.index = index
         self.begin = begin
         self.request_length = length
@@ -256,7 +254,7 @@ class Piece(Message):
         return r
 
 
-class Cancel(Message):
+class Cancel(Request):
     '''cancel: <len=0013><id=8><index><begin><length>
 
     The cancel message is fixed length, and is used to cancel block
@@ -265,19 +263,8 @@ class Cancel(Message):
     below).
     '''
     def __init__(self, index, begin, length):
-        Message.__init__(self)
-        self.length = 13
+        Request.__init__(self, index, begin, length)
         self.id = 8
-        self.index = index
-        self.begin = begin
-        self.request_length = length
-
-    def to_bytes(self):
-        r = super(Cancel, self).to_bytes()
-        r += pack('>L', self.index)
-        r += pack('>L', self.begin)
-        r += pack('>L', self.request_length)
-        return r
 
 
 class Port(Message):
