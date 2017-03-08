@@ -33,49 +33,14 @@ class MessageQueue(Queue):
 
 class Message(object):
 
-    def __init__(self):
-        self.length = None
-        self.id = None
+    def __init__(self, length, ident=None):
+        self.length = length
+        self.id = ident
         self.payload = None
         self.begin = None
-        self.length = None
         self.block = None
         self.port = None
         self.bitfield = None
-
-    # Factory method for generating message objects
-    @staticmethod
-    def get_message(msg_type,
-                    index=None,
-                    begin=None,
-                    length=None,
-                    block=None,
-                    port=None,
-                    bitfield=None):
-        if msg_type == 'keep-alive':
-            return KeepAlive()
-        elif msg_type == 'choke':
-            return Choke()
-        elif msg_type == 'unchoke':
-            return UnChoke()
-        elif msg_type == 'interested':
-            return Interested()
-        elif msg_type == 'not interested':
-            return NotInterested()
-        elif msg_type == 'have':
-            return Have(index)
-        elif msg_type == 'bitfield':
-            return BitField(bitfield)
-        elif msg_type == 'request':
-            return Request(index, begin, length)
-        elif msg_type == 'piece':
-            return Piece(index, begin, block)
-        elif msg_type == 'cancel':
-            return Cancel(index, begin, length)
-        elif msg_type == 'port':
-            return Port(port)
-        else:
-            raise ValueError('Unknown message type %s' % msg_type)
 
     # Factory method for generating message objects from raw bytes
     @staticmethod
@@ -85,10 +50,6 @@ class Message(object):
         # go ahead and handle the KeepAlive first
         if length == 0:
             return KeepAlive()
-
-        # make sure the length is actually correct before parsing
-        # if length != len(payload) - 4:
-        #     raise Exception('Message length mismatch')
 
         # get the id and start parsing
         msg_id = int(unpack('!c', payload[4:5])[0][0])
@@ -150,8 +111,7 @@ class KeepAlive(Message):
     time is generally two minutes.
     '''
     def __init__(self):
-        Message.__init__(self)
-        self.length = 0
+        Message.__init__(self, 0)
 
 
 class Choke(Message):
@@ -160,9 +120,7 @@ class Choke(Message):
     The choke message is fixed-length and has no payload.
     '''
     def __init__(self):
-        Message.__init__(self)
-        self.length = 1
-        self.id = 0
+        Message.__init__(self, 1, 0)
 
 
 class UnChoke(Message):
@@ -171,9 +129,7 @@ class UnChoke(Message):
     The unchoke message is fixed-length and has no payload.
     '''
     def __init__(self):
-        Message.__init__(self)
-        self.length = 1
-        self.id = 1
+        Message.__init__(self, 1, 1)
 
 
 class Interested(Message):
@@ -182,10 +138,7 @@ class Interested(Message):
     The interested message is fixed-length and has no payload.
     '''
     def __init__(self):
-        Message.__init__(self)
-        self.length = 1
-        self.id = 2
-
+        Message.__init__(self, 1, 2)
 
 class NotInterested(Message):
     '''not interested: <len=0001><id=3>
