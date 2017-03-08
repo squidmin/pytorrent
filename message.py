@@ -33,7 +33,7 @@ class MessageQueue(Queue):
 
 class Message(object):
 
-    def __init__(self, length, ident=None):
+    def __init__(self, length=None, ident=None):
         self.length = length
         self.id = ident
         self.payload = None
@@ -140,16 +140,14 @@ class Interested(Message):
     def __init__(self):
         Message.__init__(self, 1, 2)
 
+
 class NotInterested(Message):
     '''not interested: <len=0001><id=3>
 
     The not interested message is fixed-length and has no payload.
     '''
     def __init__(self):
-        Message.__init__(self)
-        self.length = 1
-        self.id = 3
-
+        Message.__init__(self, 1, 3)
 
 class Have(Message):
     '''have: <len=0005><id=4><piece index>
