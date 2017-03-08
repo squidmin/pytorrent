@@ -1,4 +1,5 @@
 requests
+aiohttp
 bitstring
 codeclimate-test-reporter
 pytest
