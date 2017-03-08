@@ -1,8 +1,10 @@
-from bencode import encode, decode
+import asyncio
+from bencode import decode, encode
 from hashlib import sha1
 from math import ceil
 from bitstring import BitArray
 import os
+import tracker
 
 
 """
@@ -35,11 +37,23 @@ class Piece(object):
 
 class Torrent(object):
     def __init__(self,
-                 torrent_dict,
+                 torrent_dict=None,
                  root_path=None):
 
         self._dict = torrent_dict
         self._root_path = root_path
+        self.loop = asyncio.get_event_loop()
+
+    @classmethod
+    def fromurl(cls, url):
+        import requests
+        response = requests.get(url)
+        return cls(decode(response.content))
+
+    @classmethod
+    def fromfile(cls, path):
+        with open(path, 'rb') as file:
+            return cls(decode(file.read()))
 
     @property
     def pieces(self):
@@ -116,25 +130,20 @@ class Torrent(object):
         pass
 
 
+async def fetch(session, url):
+    with async_timeout.timeout(10):
+        async with session.get(url) as response:
+            return await response.read()
+
+async def main(loop):
+    async with aiohttp.ClientSession(loop=loop) as session:
+        url = ('https://yts.ag/torrent/download/'
+               'FFCDCB5312F25DB37034552849843981BD401C9D')
+        data = await fetch(session, url)
+        print(Torrent(decode(data)))
+
 if __name__ == '__main__':
-    import pprint
-    pp = pprint.PrettyPrinter(indent=2)
-    for file in os.listdir('sample_torrents'):
-        with open('sample_torrents/' + file, 'rb') as f:
-            torrent_dict = decode(f.read())
-            torrent = Torrent(torrent_dict)
-            pp.pprint('name: %s' % torrent.name)
-            pp.pprint('info_hash: %s' % torrent.info_hash)
-            pp.pprint('comment: %s' % torrent.comment)
-            pp.pprint('status: %s' % torrent.status)
-            # pp.pprint('pieces: %s' % torrent.pieces)
-            pp.pprint('piece_length: %s' % torrent.piece_length)
-            pp.pprint('created_by: %s' % torrent.created_by)
-            pp.pprint('creation_date: %s' % torrent.creation_date)
-            pp.pprint('encoding: %s' % torrent.encoding)
-            pp.pprint('files: %s' % torrent.files)
-            pp.pprint('length: %s' % torrent.length)
-            pp.pprint('trackers: %s' % torrent.trackers)
-            pp.pprint('total_pieces: %s' % torrent.total_pieces)
-            pp.pprint('bitfield: %s' % torrent.bitfield)
-        print()
+    import aiohttp
+    import async_timeout
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main(loop))
