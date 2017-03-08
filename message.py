@@ -51,8 +51,19 @@ class Message(object):
         if length == 0:
             return KeepAlive()
 
-        # get the id and start parsing
-        msg_id = int(unpack('!c', payload[4:5])[0][0])
+        # lazy unpacking
+        try:
+            msg_id = int(unpack('!c', payload[4:5])[0][0])
+            bitfield = payload[5:]
+            index = int(unpack('>L', payload[5:9])[0])
+            begin = int(unpack('>L', payload[9:13])[0])
+            r_length = int(unpack('>L', payload[13:])[0])
+            block = payload[13:]
+            port = int(unpack('!H', payload[5:])[0])
+        except:
+            pass
+
+        # return message based on message id
         if msg_id == 0:
             return Choke()
         elif msg_id == 1:
@@ -62,28 +73,16 @@ class Message(object):
         elif msg_id == 3:
             return NotInterested()
         elif msg_id == 4:
-            index = unpack('>L', payload[5:])[0]
             return Have(index)
         elif msg_id == 5:
-            bitfield = payload[5:]
             return BitField(bitfield)
         elif msg_id == 6:
-            index = int(unpack('>L', payload[5:9])[0])
-            begin = int(unpack('>L', payload[9:13])[0])
-            r_length = int(unpack('>L', payload[13:])[0])
             return Request(index, begin, r_length)
         elif msg_id == 7:
-            index = int(unpack('>L', payload[5:9])[0])
-            begin = int(unpack('>L', payload[9:13])[0])
-            block = payload[13:]
             return Piece(index, begin, block)
         elif msg_id == 8:
-            index = int(unpack('>L', payload[5:9])[0])
-            begin = int(unpack('>L', payload[9:13])[0])
-            r_length = int(unpack('>L', payload[13:])[0])
             return Cancel(index, begin, r_length)
         elif msg_id == 9:
-            port = int(unpack('!H', payload[5:])[0])
             return Port(port)
         else:
             raise Exception('Unknown message id %s' % msg_id)
