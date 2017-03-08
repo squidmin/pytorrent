@@ -38,10 +38,10 @@ class Piece(object):
 class Torrent(object):
     def __init__(self,
                  torrent_dict=None,
-                 root_path=None):
+                 save_path=None):
 
         self._dict = torrent_dict
-        self._root_path = root_path
+        self._save_path = save_path
         self.loop = asyncio.get_event_loop()
 
     @classmethod
@@ -102,12 +102,12 @@ class Torrent(object):
     @property
     def trackers(self):
         """Returns the list of trackers in the order they should be queried"""
-        if b'announce' in self._dict:
-            return list(self._dict[b'announce'].decode('utf-8'))
-        elif b'announce-list' in self._dict:
+        if b'announce-list' in self._dict:
             return [t.decode('utf-8')
                     for trackers in self._dict[b'announce-list']
                     for t in trackers]
+        elif b'announce' in self._dict:
+            return [self._dict[b'announce'].decode('utf-8')]
 
     @property
     def bitfield(self):
