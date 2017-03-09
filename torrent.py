@@ -6,7 +6,6 @@ from math import ceil
 from bitstring import BitArray
 import os
 import tracker
-import functools
 
 
 """
@@ -42,15 +41,12 @@ class Torrent(object):
                  torrent_dict=None,
                  save_path=None):
 
-        self._peers = []
         self._dict = torrent_dict
         self._save_path = save_path
         self.loop = asyncio.get_event_loop()
         for t in self.trackers:
-            future = asyncio.Future()
-            future.add_done_callback(functools.partial(self._add_peers, peers=future.result))
             self.loop.create_task(tracker.get_peers(self.loop,
-                                                    future,
+                                                    self._add_peers,
                                                     t,
                                                     self.info_hash))
 
@@ -136,8 +132,18 @@ class Torrent(object):
             self._bitfield = BitArray(data)
         return self._bitfield
 
-    def _add_peers(self, future, peers):
-        self._peers += peers()
+    @property
+    def peers(self):
+        if not hasattr(self, '_peers'):
+            self._peers = []
+
+        return self._peers
+
+    def _add_peers(self, peers):
+        for p in peers:
+            if p not in self.peers:
+                self._peers += peers
+
     def __eq__(self, other):
         ''' Torrents are considered equal if their info_hashes are the same'''
         return self.info_hash == other.info_hash
@@ -168,14 +174,14 @@ async def main(loop):
         data = await fetch(session, url)
         torrent = Torrent(decode(data))
         print(torrent)
-        print(torrent.info_hash)
+        # print(torrent.info_hash)
 
 if __name__ == '__main__':
     import aiohttp
     import async_timeout
     url = ('https://yts.ag/torrent/download/'
            'FFCDCB5312F25DB37034552849843981BD401C9D')
-    torrent = Torrent.fromurl(url)
+    # torrent = Torrent.fromurl(url)
     loop = asyncio.get_event_loop()
     loop.create_task(main(loop))
     loop.run_forever()

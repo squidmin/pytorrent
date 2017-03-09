@@ -23,15 +23,24 @@ def decode_binary_peers(peers):
             for p in peers]
 
 
-async def get_peers(loop, future, url, info_hash):
-    """ Update tracker peers, each call adds new peers. """
-    request = await make_tracker_request(loop, url, info_hash)
+async def get_peers(loop, callback, url, info_hash):
+    """ asyncio Function that will take a url and an info hash and call
+    callback with the list if we are able to get peers"""
+    try:
+        request = await make_tracker_request(loop, url, info_hash)
+    except:
+        return
     peers = decode(request)[b'peers']
-    print(peers)
     if type(peers) == bytes:
-        future.set_result(decode_binary_peers(peers))
+        callback(decode_binary_peers(peers))
     elif type(peers) == list:
-        future.set_result(decode_expanded_peers(peers))
+        callback(decode_expanded_peers(peers))
+    interval = decode(request)[b'interval']
+    print(f'refreshing peers from {url} in {interval} seconds')
+    loop.create_task(delay(interval, get_peers(loop,
+                                               callback,
+                                               url,
+                                               info_hash)))
 
 
 def decode_port(port):
@@ -72,8 +81,13 @@ async def main(loop):
         print(t)
         print(t.info_hash)
 
+async def delay(n, coro):
+    """Helper to delay a coroutine by n seconds."""
+    await asyncio.sleep(n)
+    return await coro
+
 if __name__ == '__main__':
     url = ('https://yts.ag/torrent/download/'
            'FFCDCB5312F25DB37034552849843981BD401C9D')
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(loop))
+    # loop.run_until_complete(delay(5, hello('asdf')))
