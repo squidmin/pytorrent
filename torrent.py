@@ -181,7 +181,8 @@ if __name__ == '__main__':
     import async_timeout
     url = ('https://yts.ag/torrent/download/'
            'FFCDCB5312F25DB37034552849843981BD401C9D')
-    # torrent = Torrent.fromurl(url)
     loop = asyncio.get_event_loop()
-    loop.create_task(main(loop))
+    # loop.create_task(main(loop))
+    torrent = Torrent.fromurl(url)
     loop.run_forever()
+    print('asdf')
