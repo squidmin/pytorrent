@@ -3,4 +3,4 @@
 [![Test Coverage](https://codeclimate.com/github/BadStreff/pytorrent/badges/coverage.svg)](https://codeclimate.com/github/BadStreff/pytorrent/coverage)
 [![Code Climate](https://codeclimate.com/github/BadStreff/pytorrent/badges/gpa.svg)](https://codeclimate.com/github/BadStreff/pytorrent)
 
-A torrent client written entirely in python
+An async torrent client written entirely in python
